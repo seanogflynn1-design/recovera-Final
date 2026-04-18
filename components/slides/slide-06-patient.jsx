@@ -1,10 +1,9 @@
-// Slide 7 — "The Patient" — WARM, 16s, DECK-FULL.
+// Slide 06 — THE PATIENT SIDE · WARM (16s) · DECK-FULL · AUTO-PLAY
 //
 // Embedded iPhone with PatientApp playing a scripted sequence: start session
-// → complete → log check-in → streak ticks 12 → 13. A rotating Fraunces
-// italic caption sits right of the iPhone. Two annotation callouts (with thin
-// SVG connector lines) point at the Start Session button and the streak
-// number at specific timeline cues.
+// → complete → log check-in → streak ticks 12 → 13. Rotating Fraunces italic
+// captions teach each step. Two annotation callouts (with thin SVG connector
+// lines) point at the Start Session button and the streak number.
 //
 // This is the validation slide for the timeline engine's determinism
 // contract: navigate away and back, and this sequence must replay
@@ -14,10 +13,10 @@
   const { useSlideTimeline, SlideAnnotation, IPhone15Pro, PatientApp } = window;
 
   const LINES = [
-    { id: 'line-1', text: 'Conor logs his session.' },
-    { id: 'line-2', text: 'Twelve minutes. No clinic visit.' },
-    { id: 'line-3', text: 'His streak grows by one.' },
-    { id: 'line-4', text: 'His physio sees all of it — already.' },
+    { id: 'line-1', text: 'Conor does his prescribed session.' },
+    { id: 'line-2', text: 'The camera scores every rep.' },
+    { id: 'line-3', text: 'He logs his pain.' },
+    { id: 'line-4', text: 'His physio sees it all, before the appointment.' },
   ];
 
   // Timeline authoritative per build spec.
@@ -60,15 +59,20 @@
 
     return (
       <div style={{ position: 'absolute', inset: 0 }}>
-        {/* Eyebrow */}
+        {/* Explanation — top centred */}
         <div style={{
-          position: 'absolute', top: 96, left: 120,
-          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-          fontSize: 13, letterSpacing: '0.3em', color: 'var(--mute)',
-          fontWeight: 500,
-          animation: 'pitchArrive 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both',
+          position: 'absolute',
+          left: 0, right: 0, top: Math.round(1080 * 0.08),
+          textAlign: 'center',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: 20, fontWeight: 500,
+          letterSpacing: '0.01em',
+          color: 'var(--ink)',
+          animation: 'pitchFade 500ms ease both',
         }}>
-          § THE PATIENT · 02
+          <div style={{ display: 'inline-block', maxWidth: 900 }}>
+            The patient opens the app. Does their session. The phone scores it. Twelve minutes, no clinic visit.
+          </div>
         </div>
 
         {/* iPhone with embedded PatientApp */}
@@ -110,7 +114,7 @@
           fontSize: 13, letterSpacing: '0.2em', color: 'var(--mute)',
           fontWeight: 500,
         }}>
-          CONOR MURPHY · WEEK 8 ACL · DUBLIN
+          CONOR MURPHY · WEEK 8 ACL RECOVERY · DUBLIN
         </div>
 
         {/* Annotation callout 1 — prescribed by Dr. Sarah Nolan */}
@@ -122,7 +126,7 @@
             width: 240,
             textAlign: 'right',
           }}
-          text={<span>→ prescribed by Dr. Sarah Nolan</span>}
+          text={<span>→ prescribed by Dr. Sarah Nolan last week</span>}
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,
@@ -143,7 +147,7 @@
             top: phoneTop + 330,
             width: 280,
           }}
-          text={<span>→ 13 days · clinically verified</span>}
+          text={<span>→ 13 days · every session logged</span>}
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,

@@ -1,7 +1,8 @@
-// Slide 8 — THE CLINICIAN · WARM (24s) · DECK-FULL
+// Slide 07 — THE CLINICIAN SIDE · WARM (24s) · DECK-FULL · AUTO-PLAY
 // Embedded MacBook with ClinicianDash. The timeline walks the eye through
 // the 4 KPIs, then the 3 red-flag patients, then the Conor schedule card.
 // Each beat gets a Fraunces italic annotation anchored back to its target.
+// Top-centred explanation line teaches the workflow in one sentence.
 
 (function () {
   const { useSlideTimeline, SlideAnnotation, MacBookFrame, ClinicianDash } = window;
@@ -72,16 +73,20 @@
 
     return (
       <div style={{ position: 'absolute', inset: 0 }}>
-        {/* Eyebrow */}
+        {/* Explanation — top-centred */}
         <div style={{
-          position: 'absolute', top: 72, left: 120,
-          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-          fontSize: 13, fontWeight: 500,
-          letterSpacing: '0.3em',
-          color: 'var(--mute)',
-          animation: 'pitchArrive 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both',
+          position: 'absolute',
+          left: 0, right: 0, top: Math.round(1080 * 0.06),
+          textAlign: 'center',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: 20, fontWeight: 500,
+          letterSpacing: '0.01em',
+          color: 'var(--ink)',
+          animation: 'pitchFade 500ms ease both',
         }}>
-          § THE CLINICIAN · 03
+          <div style={{ display: 'inline-block', maxWidth: 1100 }}>
+            Before every appointment, the physio opens her dashboard. She sees who did what, who needs attention, and who&apos;s ahead of schedule — in three seconds.
+          </div>
         </div>
 
         {/* MacBook with embedded ClinicianDash */}
@@ -123,7 +128,7 @@
         <SlideAnnotation
           shown={!!annotations['ann-3-flags']}
           style={{ left: macLeft + 320, top: macTop - 56, width: 240 }}
-          text="3 need attention"
+          text="3 flagged — these need her first"
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,
@@ -138,7 +143,7 @@
         <SlideAnnotation
           shown={!!annotations['ann-pain-spike']}
           style={{ left: macLeft - 360, top: macTop + 260, width: 320, textAlign: 'right' }}
-          text="→ pain spike · 2 sessions missed"
+          text="→ pain spike, missed two sessions"
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,
@@ -152,7 +157,7 @@
         <SlideAnnotation
           shown={!!annotations['ann-no-logs']}
           style={{ left: macLeft - 360, top: macTop + 340, width: 320, textAlign: 'right' }}
-          text="→ no logs in 3 days"
+          text="→ no activity in 3 days"
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,
@@ -166,7 +171,7 @@
         <SlideAnnotation
           shown={!!annotations['ann-call-req']}
           style={{ left: macLeft - 360, top: macTop + 420, width: 320, textAlign: 'right' }}
-          text="→ requires call"
+          text="→ pain trending up, needs a call"
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,
@@ -180,7 +185,7 @@
         <SlideAnnotation
           shown={!!annotations['ann-conor-ahead']}
           style={{ left: macLeft + macW + 28, top: macTop + 430, width: 260 }}
-          text="→ 4 weeks ahead of protocol"
+          text="→ Conor: 4 weeks ahead of protocol"
           typographyStyle={{
             fontFamily: "'Fraunces', Georgia, serif",
             fontStyle: 'italic', fontWeight: 400,
