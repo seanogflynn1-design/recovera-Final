@@ -6,7 +6,7 @@
 //                   — the deck's peak Fraunces moment at 88px.
 
 (function () {
-  function Slide05({ isActive, epoch }) {
+  function Slide04({ isActive, epoch }) {
     const [phase, setPhase] = React.useState(1);
     const [emailState, setEmailState] = React.useState('enter'); // enter → selected → corrected → leaving
 
@@ -173,5 +173,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[5] = Slide05;
+  window.PitchSlides[4] = Slide04;
 })();

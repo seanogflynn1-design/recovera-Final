@@ -9,7 +9,7 @@
     '— To turn a working prototype into a working business',
   ];
 
-  function Slide11() {
+  function Slide10() {
     const left = Math.round(1920 * 0.10);  // 192
     const topEyebrow = 140;
     const topHeadline = topEyebrow + 72;
@@ -91,5 +91,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[11] = Slide11;
+  window.PitchSlides[10] = Slide10;
 })();

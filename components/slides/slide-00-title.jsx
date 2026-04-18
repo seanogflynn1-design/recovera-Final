@@ -1,9 +1,9 @@
-// Slide 1 — TITLE · DARK (5s) · DECK-FULL
-// "recovera" wordmark, hairline rule, NovaUCD metadata.
+// Slide 00 — TITLE · DARK (5s) · DECK-FULL
+// "recovera" wordmark, hairline rule, NovaUCD metadata, explanation line.
 // Start of the SessionTimestamp clock.
 
 (function () {
-  function Slide01() {
+  function Slide00() {
     return (
       <div style={{ position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column',
@@ -44,5 +44,5 @@
     );
   }
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[1] = Slide01;
+  window.PitchSlides[0] = Slide00;
 })();

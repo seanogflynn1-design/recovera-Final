@@ -1,5 +1,5 @@
-// Slide 6 — THE COMPETITORS · DARK (10s) · DECK-LEFT
-// Three valuation rows, hairline rule, two-line verdict, source citation.
+// Slide 05 — THE BILLION-DOLLAR GAP · DARK (12s) · DECK-LEFT
+// Three valuation rows with sub-lines, hairline rule, verdict, source.
 
 (function () {
   const COMPETITORS = [
@@ -8,7 +8,7 @@
     { name: 'Kaia Health',   value: '$123M raised' },
   ];
 
-  function Slide06() {
+  function Slide05() {
     const left = 120;
     const topStart = 240;
     const rowHeight = 100;
@@ -106,5 +106,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[6] = Slide06;
+  window.PitchSlides[5] = Slide05;
 })();

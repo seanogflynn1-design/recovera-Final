@@ -1,20 +1,22 @@
-// Pitch deck shell — orchestrates 12 slides at 1920×1080, handles keyboard
+// Pitch deck shell — orchestrates 11 slides at 1920×1080, handles keyboard
 // navigation, dissolve transitions, export auto-advance, chrome (ticking
 // SESSION timestamp + pagination), viewport letterboxing, and the shared
 // React refs that slides use to drive embedded prototype components.
 //
 // Individual slides live in components/slides/*.jsx and attach themselves
-// to window.PitchSlides under their numeric id.
+// to window.PitchSlides under their numeric id (0..10).
 
 (function () {
   const {
     SessionClockProvider, SessionTimestamp, Pagination,
   } = window;
 
-  const SLIDE_COUNT = 12;
+  const SLIDE_COUNT = 11;
 
   // Dwell durations (ms) for export / auto-advance mode.
-  const DWELL = [5000, 5000, 12000, 4000, 10000, 22000, 10000, 16000, 24000, 10000, 14000, 12000];
+  // Indices 0..10 — title, problem, gap, what, insight, market,
+  // patient, clinician, outcome, ceiling, ask. Total 138s = 2:18.
+  const DWELL = [5000, 12000, 8000, 10000, 15000, 12000, 16000, 24000, 10000, 14000, 12000];
 
   function ScaleStage({ children }) {
     const [transform, setTransform] = React.useState('scale(1)');
@@ -60,7 +62,7 @@
         zIndex: 9999,
         pointerEvents: 'none',
       }}>
-        {String(slideIndex).padStart(2, '0')} / {String(total - 1).padStart(2, '0')} · SPACE / ← → · R · F
+        {String(slideIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')} · SPACE / ← → · R · F
       </div>
     );
   }
@@ -186,9 +188,9 @@
               ? <Component isActive={isActive} epoch={epochs[i] || 0} slideIndex={i} />
               : <PlaceholderSlide index={i} tone={tone} />}
           </div>
-          {/* Chrome — SessionTimestamp + Pagination. Slide 0 suppresses the
-              timestamp (the clock hasn't started yet). */}
-          {i >= 1 && <SessionTimestamp tone={tone} />}
+          {/* Chrome — SessionTimestamp + Pagination. Clock starts on the
+              title slide (index 0). */}
+          <SessionTimestamp tone={tone} />
           <Pagination index={i} total={SLIDE_COUNT} tone={tone} />
         </div>
       );
@@ -204,11 +206,11 @@
     );
   }
 
-  // Tone map — authoritative per the build spec (DARK DARK DARK DARK WARM DARK DARK WARM WARM WARM DARK DARK
-  // wait — re-check: "DARK · DARK · DARK · WARM · DARK · DARK · WARM · WARM · WARM · DARK · DARK (12 slides total
-  // including prelude)." — so: 0 dark, 1 dark, 2 dark, 3 dark, 4 warm, 5 dark, 6 dark, 7 warm, 8 warm, 9 warm,
-  // 10 dark, 11 dark.  Slide 3 is "BLIND." dark per slide spec, slide 4 is WARM per slide 4 spec. That lines up.
-  const SLIDE_TONE = ['dark', 'dark', 'dark', 'dark', 'warm', 'dark', 'dark', 'warm', 'warm', 'warm', 'dark', 'dark'];
+  // Tone map — 11 slides, 0-indexed.
+  // 0 title · 1 problem · 2 gap · 3 what (warm) · 4 insight · 5 market ·
+  // 6 patient (warm) · 7 clinician (warm) · 8 outcome (warm) · 9 ceiling ·
+  // 10 ask.
+  const SLIDE_TONE = ['dark', 'dark', 'dark', 'warm', 'dark', 'dark', 'warm', 'warm', 'warm', 'dark', 'dark'];
 
   function PlaceholderSlide({ index, tone }) {
     const color = tone === 'dark' ? 'var(--film-mute, #7A746B)' : 'var(--mute, #6B6B6B)';

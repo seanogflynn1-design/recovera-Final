@@ -40,7 +40,7 @@
     { at: 14500, action: 'hideAnnotation',  id: 'callout-streak' },
   ];
 
-  function Slide07({ isActive }) {
+  function Slide06({ isActive }) {
     const patientAppRef = React.useRef(null);
     const [annotations, setAnnotations] = React.useState({});
 
@@ -160,5 +160,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[7] = Slide07;
+  window.PitchSlides[6] = Slide06;
 })();

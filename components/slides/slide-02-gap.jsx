@@ -1,8 +1,8 @@
-// Slide 3 — BLIND. · DARK (4s) · DECK-FULL
-// Pure visual punctuation. 800ms of blackness, then the word lands.
+// Slide 02 — THE GAP · DARK (8s) · DECK-FULL
+// Split composition: 30 min at clinic vs 167 hrs at home. Bottom thesis line.
 
 (function () {
-  function Slide03() {
+  function Slide02() {
     return (
       <div style={{ position: 'absolute', inset: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -23,5 +23,5 @@
     );
   }
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[3] = Slide03;
+  window.PitchSlides[2] = Slide02;
 })();

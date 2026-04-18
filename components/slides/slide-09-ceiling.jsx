@@ -14,7 +14,7 @@
     'Pharma trial infrastructure · Y5',
   ];
 
-  function Slide10() {
+  function Slide09() {
     const left = Math.round(1920 * 0.10);     // 192
     const topOne = 160;                       // eyebrow
     const topEngine = topOne + 56;
@@ -129,5 +129,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[10] = Slide10;
+  window.PitchSlides[9] = Slide09;
 })();

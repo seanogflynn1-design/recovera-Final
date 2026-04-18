@@ -7,7 +7,7 @@
 (function () {
   const { IPhone15Pro, PatientApp } = window;
 
-  function Slide09({ isActive, epoch }) {
+  function Slide08({ isActive, epoch }) {
     const [fill, setFill] = React.useState(0); // 0..1 green width fraction
     const [tailLabelShown, setTailLabelShown] = React.useState(false);
 
@@ -177,5 +177,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[9] = Slide09;
+  window.PitchSlides[8] = Slide08;
 })();

@@ -44,7 +44,7 @@
     { at: 22000, action: 'resetHighlight',  target: '*' },
   ];
 
-  function Slide08({ isActive }) {
+  function Slide07({ isActive }) {
     const clinicianRef = React.useRef(null);
     const [annotations, setAnnotations] = React.useState({});
 
@@ -196,5 +196,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[8] = Slide08;
+  window.PitchSlides[7] = Slide07;
 })();

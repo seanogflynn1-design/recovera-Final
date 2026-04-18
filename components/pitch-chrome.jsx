@@ -3,26 +3,25 @@
 // subconscious "medical instrument" cues described in the build spec.
 //
 // Exports (attached to window):
-//   SessionClockProvider — wraps the deck. Starts a monotonic clock when
-//                          `slideIndex` first reaches 1 (slide 0 is the
-//                          prelude and has no timestamp).
+//   SessionClockProvider — wraps the deck. Starts a monotonic clock on the
+//                          title slide (slideIndex 0) and never resets.
 //   SessionTimestamp     — reads the clock from context and renders
 //                          `SESSION · HH:MM:SS · DUBLIN` at top-right.
-//   Pagination           — `NN / MM` at bottom-left.
+//   Pagination           — `NN / MM` at bottom-left, 1-indexed for display.
 
 (function () {
   const SessionContext = React.createContext({ seconds: 0, started: false });
 
   function SessionClockProvider({ slideIndex, children }) {
     const [seconds, setSeconds] = React.useState(0);
-    const startedRef = React.useRef(false);
+    const [started, setStarted] = React.useState(false);
     const startMarkRef = React.useRef(null);
 
     React.useEffect(() => {
-      if (startedRef.current) return undefined;
-      if (typeof slideIndex !== 'number' || slideIndex < 1) return undefined;
-      startedRef.current = true;
+      if (startMarkRef.current !== null) return undefined;
+      if (typeof slideIndex !== 'number' || slideIndex < 0) return undefined;
       startMarkRef.current = performance.now();
+      setStarted(true);
       let rafId = 0;
       let cancelled = false;
       const tick = () => {
@@ -35,10 +34,7 @@
       return () => { cancelled = true; if (rafId) cancelAnimationFrame(rafId); };
     }, [slideIndex]);
 
-    const value = React.useMemo(() => ({
-      seconds,
-      started: startedRef.current,
-    }), [seconds]);
+    const value = React.useMemo(() => ({ seconds, started }), [seconds, started]);
 
     return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
   }
@@ -86,7 +82,7 @@
         zIndex: 120,
         pointerEvents: 'none',
       }}>
-        {pad(index)} / {pad(total - 1)}
+        {pad(index + 1)} / {pad(total)}
       </div>
     );
   }

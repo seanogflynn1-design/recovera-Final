@@ -1,11 +1,11 @@
-// Slide 4 — INVITED BY DR. SARAH NOLAN · WARM (10s) · DECK-LEFT
-// Text block left; iPhone showing Day 1 onboarding right. Green bar + italic
-// pull-quote from Áine, CORU-registered clinical advisor.
+// Slide 03 — WHAT RECOVERA IS · WARM (10s) · DECK-LEFT
+// Text block left explains the patient side; iPhone onboarding right. Green
+// bar + italic pull-quote from Áine, CORU-registered clinical advisor.
 
 (function () {
   const { IPhone15Pro, PatientApp } = window;
 
-  function Slide04() {
+  function Slide03() {
     // iPhone at x=50% of viewport (per spec), vertically centered.
     // iPhone dimensions 412 × 866.
     const phoneLeft = Math.round(1920 * 0.50);            // 960
@@ -94,5 +94,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[4] = Slide04;
+  window.PitchSlides[3] = Slide03;
 })();

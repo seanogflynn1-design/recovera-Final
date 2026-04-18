@@ -1,9 +1,9 @@
-// Slide 2 — 18 MINUTES · DARK (12s) · DECK-LEFT
-// Asymmetric composition. Giant "18" anchors left; supporting text right of
-// it, baseline-aligned. Source citation bottom-aligned with numeral baseline.
+// Slide 01 — THE PROBLEM · DARK (12s) · DECK-LEFT
+// Giant "18" anchors left; supporting text right of it, baseline-aligned.
+// Explanation line top-left, source citation below.
 
 (function () {
-  function Slide02() {
+  function Slide01() {
     // Anchor x at 15% of 1920 = 288px. The rest cascades from there.
     const numeralLeft = 288;
     const numeralBaselineTop = 680;   // vertical centre of the numeral block
@@ -89,5 +89,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[2] = Slide02;
+  window.PitchSlides[1] = Slide01;
 })();
