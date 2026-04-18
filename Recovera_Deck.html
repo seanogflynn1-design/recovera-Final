@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recovera — Pitch Deck</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,50;1,9..144,400..900,50&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* DARK mode — film palette */
+    --film-black: #0A0A0A;
+    --film-ink:   #EDEAE3;
+    --film-mute:  #7A746B;
+    --film-soft:  #2A2620;
+
+    /* WARM mode — paper palette (lifted from prototype, unmodified) */
+    --paper:      #F8F8F5;
+    --ink:        #0D0D0D;
+    --mute:       #6B6B6B;
+    --mute-soft:  #9A9A9A;
+    --green:      #1F4D2E;
+    --green-soft: #2A6B40;
+    --amber:      #C88B1A;
+    --red:        #B9432C;
+  }
+
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: #000;
+    color: var(--film-ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+  * { box-sizing: border-box; }
+
+  /* Prototype prototypes-inside-slides use Inter; keep original animations
+     available in case embedded components reference them. */
+  @keyframes pulse    { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:.5; transform:scale(.85) } }
+  @keyframes pulseBar { 0%,100% { box-shadow:0 0 0 0 rgba(185,67,44,0) } 50% { box-shadow:0 0 0 4px rgba(185,67,44,.12) } }
+  @keyframes slideUp  { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+  @keyframes scaleIn  { from { opacity:0; transform:scale(.7) } to { opacity:1; transform:scale(1) } }
+  @keyframes dash     { to { stroke-dashoffset:0 } }
+  @keyframes fadeIn   { from { opacity:0 } to { opacity:1 } }
+  @keyframes blink    { 0%,50% { opacity:1 } 51%,100% { opacity:0 } }
+  @keyframes slideDown{ from { opacity:0; transform:translateX(-50%) translateY(-12px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+  @keyframes spin     { to { transform:rotate(360deg) } }
+  @keyframes growBar  { from { transform:scaleX(0) } to { transform:scaleX(1) } }
+
+  /* Pitch-deck motion primitives */
+  @keyframes pitchArrive {
+    from { opacity: 0; transform: scale(1.04); filter: blur(4px); }
+    to   { opacity: 1; transform: scale(1);    filter: blur(0); }
+  }
+  @keyframes pitchArriveEmphatic {
+    from { opacity: 0; transform: scale(1.05); filter: blur(6px); }
+    to   { opacity: 1; transform: scale(1);    filter: blur(0); }
+  }
+  @keyframes pitchArriveFrame {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pitchDraw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+  @keyframes pitchFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Timeline-engine highlight effects */
+  @keyframes tlPulseRing {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(31, 77, 46, 0); }
+    50%      { box-shadow: 0 0 0 8px rgba(31, 77, 46, 0.16); }
+  }
+  .tl-pulse  { animation: tlPulseRing 1.4s ease-in-out 2; }
+  .tl-outline { outline: 2px solid rgba(31, 77, 46, 0.65); outline-offset: 4px; transition: outline 300ms ease; }
+  .tl-hover   { background-color: rgba(31, 77, 46, 0.06) !important; transition: background-color 200ms ease; }
+
+  /* DARK slides use Fraunces peak moments. The ink variable changes per
+     slide tone; SlideFrame controls background. */
+  .deck-slide.tone-dark { color: var(--film-ink); }
+  .deck-slide.tone-warm { color: var(--ink); }
+
+  /* Hide any stray scrollbars from the embedded prototype frames. */
+  .deck-slide ::-webkit-scrollbar { width: 0; height: 0; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- Prototype components the deck embeds -->
+<script type="text/babel" src="frames/device-frames.jsx"></script>
+<script type="text/babel" src="components/patient-app.jsx"></script>
+<script type="text/babel" src="components/patient-extras.jsx"></script>
+<script type="text/babel" src="components/clinician-profile.jsx"></script>
+<script type="text/babel" src="components/clinician-pitch.jsx"></script>
+<script type="text/babel" src="components/clinician-extras.jsx"></script>
+<script type="text/babel" src="components/clinician-dash.jsx"></script>
+
+<!-- Pitch-deck infrastructure -->
+<script type="text/babel" src="components/pitch-timeline.jsx"></script>
+<script type="text/babel" src="components/pitch-chrome.jsx"></script>
+<script type="text/babel" src="components/pitch-annotation.jsx"></script>
+
+<!-- Slides -->
+<script type="text/babel" src="components/slides/slide-00-prelude.jsx"></script>
+<script type="text/babel" src="components/slides/slide-01-title.jsx"></script>
+<script type="text/babel" src="components/slides/slide-02-eighteen.jsx"></script>
+<script type="text/babel" src="components/slides/slide-03-blind.jsx"></script>
+<script type="text/babel" src="components/slides/slide-04-invited.jsx"></script>
+<script type="text/babel" src="components/slides/slide-05-proofreader.jsx"></script>
+<script type="text/babel" src="components/slides/slide-06-competitors.jsx"></script>
+<script type="text/babel" src="components/slides/slide-07-patient.jsx"></script>
+<script type="text/babel" src="components/slides/slide-08-clinician.jsx"></script>
+<script type="text/babel" src="components/slides/slide-09-four-weeks.jsx"></script>
+<script type="text/babel" src="components/slides/slide-10-ceiling.jsx"></script>
+<script type="text/babel" src="components/slides/slide-11-ask.jsx"></script>
+
+<!-- Deck shell + mount -->
+<script type="text/babel" src="components/pitch-deck.jsx"></script>
+<script type="text/babel">
+  ReactDOM.createRoot(document.getElementById('app')).render(<PitchDeck />);
+</script>
+
+</body>
+</html>

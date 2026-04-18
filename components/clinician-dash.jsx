@@ -20,10 +20,10 @@ function Tag({ children, tone = 'green' }) {
   );
 }
 
-function StatCard({ label, value, sub, tone = 'ink', children }) {
+function StatCard({ label, value, sub, tone = 'ink', children, className }) {
   const toneC = { green: CB.green, amber: CB.amber, ink: CB.ink, red: CB.red }[tone];
   return (
-    <div style={{ border: `1px solid ${CB.line}`, borderRadius: 14, padding: 18, background: '#fff' }}>
+    <div className={className} style={{ border: `1px solid ${CB.line}`, borderRadius: 14, padding: 18, background: '#fff' }}>
       <div style={{ fontSize: 11, color: CB.ink3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 10 }}>{label}</div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
         <div style={{ fontSize: 30, fontWeight: 600, color: toneC, letterSpacing: -0.8, fontVariantNumeric: 'tabular-nums' }}>{value}</div>
@@ -171,19 +171,23 @@ function TodayView({ onOpenPatient, onStartLive }) {
 
       {/* KPI strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 28 }}>
-        <StatCard label="Scheduled" value="8" sub="today" tone="ink"/>
-        <StatCard label="Red flags" value="3" sub="needs review" tone="red"/>
-        <StatCard label="Avg adherence" value="75%" sub="clinic" tone="green"/>
-        <StatCard label="Completed" value="2 / 8" sub="by 14:30" tone="ink"/>
+        <StatCard className="kpi-card-scheduled" label="Scheduled" value="8" sub="today" tone="ink"/>
+        <StatCard className="kpi-card-flags" label="Red flags" value="3" sub="needs review" tone="red"/>
+        <StatCard className="kpi-card-adherence" label="Avg adherence" value="75%" sub="clinic" tone="green"/>
+        <StatCard className="kpi-card-completed" label="Completed" value="2 / 8" sub="by 14:30" tone="ink"/>
       </div>
 
       {/* Red flag alerts */}
       <div style={{ fontSize: 11, color: CB.ink3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1.4, marginBottom: 10 }}>
         Flagged for attention · 3
       </div>
-      <div style={{ marginBottom: 28 }}>
+      <div className="flagged-patients-panel" style={{ marginBottom: 28 }}>
         {flagged.map((p, i) => (
-          <div key={p.id} style={{
+          <div key={p.id} className={
+            p.id === 'DK' ? 'flag-daniel-keane' :
+            p.id === 'TH' ? 'flag-tomas-hennessy' :
+            p.id === 'NB' ? 'flag-niamh-byrne' : ''
+          } style={{
             display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px',
             background: CB.redBg, borderRadius: 10, marginBottom: 8,
             animation: `pulseBar 2.6s ease-in-out infinite`,
@@ -209,9 +213,9 @@ function TodayView({ onOpenPatient, onStartLive }) {
       <div style={{ fontSize: 11, color: CB.ink3, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1.4, marginBottom: 10 }}>
         Schedule
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+      <div className="schedule-panel" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
         {PATIENTS.map(p => (
-          <button key={p.id} onClick={() => onOpenPatient(p.id)} style={{
+          <button key={p.id} onClick={() => onOpenPatient(p.id)} className={p.id === 'CM' ? 'patient-card-conor' : ''} style={{
             textAlign: 'left', border: `1px solid ${CB.line}`, borderRadius: 12, padding: 16,
             background: '#fff', cursor: 'pointer', fontFamily: 'inherit',
             transition: 'border-color 0.15s, transform 0.15s',
@@ -855,14 +859,55 @@ function ReportsView() {
 }
 
 // ---- Main shell ----------------------------------------------------------
-function ClinicianDash() {
+const ClinicianDash = React.forwardRef(function ClinicianDash(props, ref) {
   const [view, setView] = React.useState('today'); // today | messages | network | reports
   const [selectedPatient, setSelectedPatient] = React.useState(null);
   const [live, setLive] = React.useState(null); // patient name when live session active
   const [referralOpen, setReferralOpen] = React.useState(false);
+  const scrollRef = React.useRef(null);
 
   const openPatient = (id) => { setView('today'); setSelectedPatient(id); };
   const backToToday = () => setSelectedPatient(null);
+
+  const animateScrollTo = (top, duration) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const start = el.scrollTop;
+    const delta = top - start;
+    const t0 = performance.now();
+    const step = (now) => {
+      const raw = Math.min(1, (now - t0) / duration);
+      const eased = 0.5 - Math.cos(raw * Math.PI) / 2;
+      el.scrollTop = start + delta * eased;
+      if (raw < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    reset: () => {
+      setView('today');
+      setSelectedPatient(null);
+      setLive(null);
+      setReferralOpen(false);
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    },
+    scrollTo: (innerSelector, duration = 800) => {
+      const container = scrollRef.current;
+      if (!container) return;
+      const target = container.querySelector(innerSelector);
+      if (!target) return;
+      const top = target.offsetTop - 20;
+      animateScrollTo(top, duration);
+    },
+    highlightPatient: (id) => { setSelectedPatient(id); },
+    hoverButton: (selector, duration = 600) => {
+      const btn = document.querySelector(selector);
+      if (!btn) return;
+      btn.classList.add('tl-hover');
+      setTimeout(() => btn.classList.remove('tl-hover'), duration);
+    },
+  }), []);
 
   return (
     <div style={{ display: 'flex', height: '100%', background: '#fff', position: 'relative',
@@ -870,7 +915,7 @@ function ClinicianDash() {
       <Sidebar view={view} setView={(v) => { setView(v); setSelectedPatient(null); }}
         selectedPatient={selectedPatient}
         setSelectedPatient={setSelectedPatient}/>
-      <div key={view + (selectedPatient || '')} style={{ flex: 1, overflow: 'auto', background: '#FAFAF8', animation: 'fadeIn 0.25s ease' }}>
+      <div ref={scrollRef} className="clinician-dash" key={view + (selectedPatient || '')} style={{ flex: 1, overflow: 'auto', background: '#FAFAF8', animation: 'fadeIn 0.25s ease' }}>
         {view === 'today' && !selectedPatient && <TodayView onOpenPatient={openPatient} onStartLive={setLive}/>}
         {view === 'today' && selectedPatient && <PreSessionBrief patientId={selectedPatient} onBack={backToToday} onStartLive={setLive}/>}
         {view === 'clinic' && <ClinicOverviewView/>}
@@ -883,6 +928,6 @@ function ClinicianDash() {
       {referralOpen && <ReferralFlow onClose={() => setReferralOpen(false)}/>}
     </div>
   );
-}
+});
 
 Object.assign(window, { ClinicianDash });

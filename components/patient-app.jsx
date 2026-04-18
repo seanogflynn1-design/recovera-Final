@@ -101,9 +101,10 @@ function MetricBar({ label, value, tone, flag }) {
 }
 
 // ---- PATIENT: HOME -------------------------------------------------------
-function PatientHome({ onStart, onMessages }) {
+function PatientHome({ onStart, onMessages, streak = 12, checkInLogged = false, onCheckIn }) {
   const [painValue, setPainValue] = React.useState(3);
-  const [painSubmitted, setPainSubmitted] = React.useState(false);
+  const [painSubmittedLocal, setPainSubmittedLocal] = React.useState(false);
+  const painSubmitted = checkInLogged || painSubmittedLocal;
   const painColor = painValue <= 3 ? BRAND.green : painValue <= 6 ? BRAND.amber : BRAND.red;
 
   return (
@@ -126,7 +127,7 @@ function PatientHome({ onStart, onMessages }) {
               background: i < 3 ? BRAND.green : (i === 3 ? 'rgba(31,77,46,0.55)' : 'rgba(255,255,255,0.12)') }}/>
           ))}
         </div>
-        <button onClick={onStart} style={{ width: '100%', height: 52, borderRadius: 14, border: 'none',
+        <button onClick={onStart} className="start-session-btn" style={{ width: '100%', height: 52, borderRadius: 14, border: 'none',
           background: BRAND.green, color: BRAND.white, fontSize: 16, fontWeight: 600, letterSpacing: -0.2, cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
           Start session
@@ -154,7 +155,7 @@ function PatientHome({ onStart, onMessages }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: BRAND.ink4, marginTop: 4, fontFamily: 'ui-monospace, Menlo, monospace' }}>
               <span>None</span><span>Severe</span>
             </div>
-            <button onClick={() => setPainSubmitted(true)} style={{
+            <button onClick={() => { setPainSubmittedLocal(true); if (onCheckIn) onCheckIn(); }} className="log-checkin-btn" style={{
               width: '100%', height: 42, borderRadius: 10, marginTop: 14, fontFamily: 'inherit',
               background: BRAND.ink, color: '#fff', fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
               Log check-in
@@ -178,7 +179,7 @@ function PatientHome({ onStart, onMessages }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         <div style={{ border: `1px solid ${BRAND.line}`, borderRadius: 14, padding: 14, background: '#fff' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
-            <span style={{ fontSize: 28, fontWeight: 600, color: BRAND.ink, letterSpacing: -0.8 }}>12</span>
+            <span className="streak-number" style={{ fontSize: 28, fontWeight: 600, color: BRAND.ink, letterSpacing: -0.8, fontVariantNumeric: 'tabular-nums' }}>{streak}</span>
             <span style={{ fontSize: 13, color: BRAND.ink3 }}>day streak</span>
           </div>
           <div style={{ display: 'flex', gap: 3, marginTop: 8 }}>
@@ -575,13 +576,34 @@ function PatientHeader({ title }) {
   );
 }
 
-function PatientApp({ mode = 'app', onExitMode }) {
+const PatientApp = React.forwardRef(function PatientApp({ mode = 'app', onExitMode }, ref) {
   const [tab, setTab] = React.useState('home');
   const [homeSub, setHomeSub] = React.useState('home'); // home | session | done
+  const [streak, setStreak] = React.useState(12);
+  const [checkInLogged, setCheckInLogged] = React.useState(false);
 
   const onStart = () => setHomeSub('session');
   const onFinish = () => setHomeSub('done');
   const onRestart = () => setHomeSub('home');
+
+  React.useImperativeHandle(ref, () => ({
+    reset: () => {
+      setTab('home');
+      setHomeSub('home');
+      setStreak(12);
+      setCheckInLogged(false);
+    },
+    startSession: () => { setTab('home'); setHomeSub('session'); },
+    completeSession: () => { setTab('home'); setHomeSub('done'); },
+    logCheckIn: () => setCheckInLogged(true),
+    advanceStreak: (from, to) => setStreak(to),
+    advance: (state = {}) => {
+      if (state.inSession) { setTab('home'); setHomeSub('session'); }
+      if (state.sessionComplete) { setTab('home'); setHomeSub('done'); }
+      if (state.checkInLogged !== undefined) setCheckInLogged(!!state.checkInLogged);
+      if (state.streak !== undefined) setStreak(state.streak);
+    },
+  }), []);
 
   if (mode === 'onboarding') {
     return (
@@ -603,7 +625,7 @@ function PatientApp({ mode = 'app', onExitMode }) {
       <div style={{ paddingTop: 54 }}/>
       <PatientHeader/>
       <div key={tab + homeSub} style={{ flex: 1, overflow: 'auto', animation: 'fadeIn 0.3s ease' }}>
-        {tab === 'home' && homeSub === 'home' && <PatientHome onStart={onStart} onMessages={() => setTab('messages')}/>}
+        {tab === 'home' && homeSub === 'home' && <PatientHome onStart={onStart} onMessages={() => setTab('messages')} streak={streak} checkInLogged={checkInLogged} onCheckIn={() => setCheckInLogged(true)}/>}
         {tab === 'home' && homeSub === 'session' && <PatientSession onFinish={onFinish}/>}
         {tab === 'home' && homeSub === 'done' && <PatientDone onRestart={onRestart}/>}
         {tab === 'progress' && <PatientProgress/>}
@@ -614,6 +636,6 @@ function PatientApp({ mode = 'app', onExitMode }) {
       <div style={{ height: 22 }}/> {/* home indicator space */}
     </div>
   );
-}
+});
 
 Object.assign(window, { PatientApp, PATIENT_BRAND: BRAND });
