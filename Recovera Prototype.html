@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recovera — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: #F8F8F5;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: #0D0D0D;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  * { box-sizing: border-box; }
+
+  @keyframes pulse { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:.5; transform:scale(.85) } }
+  @keyframes pulseBar { 0%,100% { box-shadow:0 0 0 0 rgba(185,67,44,0) } 50% { box-shadow:0 0 0 4px rgba(185,67,44,.12) } }
+  @keyframes slideUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(.7) } to { opacity:1; transform:scale(1) } }
+  @keyframes dash { to { stroke-dashoffset:0 } }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+  @keyframes blink { 0%,50% { opacity:1 } 51%,100% { opacity:0 } }
+  @keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-12px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
+  @keyframes spin { to { transform:rotate(360deg) } }
+  @keyframes growBar { from { transform:scaleX(0) } to { transform:scaleX(1) } }
+
+  .viewport-toggle {
+    position: fixed; top: 28px; left: 50%; transform: translateX(-50%);
+    background: #0D0D0D; color: #fff; padding: 4px; border-radius: 22px;
+    display: flex; gap: 2px; z-index: 1000;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+    font-family: 'Inter', sans-serif;
+  }
+  .viewport-toggle button {
+    height: 32px; padding: 0 18px; border-radius: 18px; border: none;
+    background: transparent; color: rgba(255,255,255,0.7);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s ease; font-family: inherit;
+  }
+  .viewport-toggle button.active { background: #fff; color: #0D0D0D; }
+
+  .stage {
+    min-height: 100vh; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 120px 40px 80px;
+    animation: fadeIn 0.4s ease;
+  }
+  .stage.desktop { padding: 120px 30px 60px; }
+
+  .caption {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; color: #6B6B6B; letter-spacing: 0.8px;
+    text-transform: uppercase; font-weight: 500;
+  }
+  .scale-wrap { transform-origin: center center; }
+</style>
+</head>
+<body>
+
+<div class="viewport-toggle" id="viewToggle">
+  <button data-v="patient" class="active">Patient app</button>
+  <button data-v="onboarding">Onboarding</button>
+  <button data-v="compare">Why Recovera</button>
+  <button data-v="clinician">Clinician</button>
+</div>
+
+<div id="app"></div>
+
+<div class="caption">Recovera · Clickable prototype</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="frames/device-frames.jsx"></script>
+<script type="text/babel" src="components/patient-app.jsx"></script>
+<script type="text/babel" src="components/patient-extras.jsx"></script>
+<script type="text/babel" src="components/clinician-profile.jsx"></script>
+<script type="text/babel" src="components/clinician-pitch.jsx"></script>
+<script type="text/babel" src="components/clinician-extras.jsx"></script>
+<script type="text/babel" src="components/clinician-dash.jsx"></script>
+
+<script type="text/babel">
+function Root() {
+  const [view, setView] = React.useState(() => localStorage.getItem('recovera_view') || 'patient');
+  const [vw, setVw] = React.useState(window.innerWidth);
+  const [vh, setVh] = React.useState(window.innerHeight);
+
+  React.useEffect(() => {
+    localStorage.setItem('recovera_view', view);
+    document.querySelectorAll('#viewToggle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.v === view);
+    });
+  }, [view]);
+
+  React.useEffect(() => {
+    document.querySelectorAll('#viewToggle button').forEach(b => {
+      b.onclick = () => setView(b.dataset.v);
+    });
+    const onResize = () => { setVw(window.innerWidth); setVh(window.innerHeight); };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  if (view === 'patient' || view === 'onboarding' || view === 'compare') {
+    const phoneW = 390 + 22, phoneH = 844 + 22;
+    const maxW = vw - 80, maxH = vh - 200;
+    const scale = Math.min(1, maxW / phoneW, maxH / phoneH);
+    const mode = view === 'patient' ? 'app' : view;
+    return (
+      <div className="stage" data-screen-label={'Patient · ' + view}>
+        <div className="scale-wrap" style={{ transform: `scale(${scale})` }}>
+          <IPhone15Pro>
+            <PatientApp mode={mode} onExitMode={() => setView('patient')} />
+          </IPhone15Pro>
+        </div>
+      </div>
+    );
+  }
+
+  // Clinician: MacBook
+  const screenW = 1280, screenH = 800;
+  const frameW = screenW + 28 + 180; // bezels + base hang
+  const frameH = screenH + 28 + 36;  // bezels + base
+  const maxW = vw - 60, maxH = vh - 200;
+  const scale = Math.min(1, maxW / frameW, maxH / frameH);
+  return (
+    <div className="stage desktop" data-screen-label="Clinician Dashboard">
+      <div className="scale-wrap" style={{ transform: `scale(${scale})` }}>
+        <MacBookFrame screenWidth={screenW} screenHeight={screenH}>
+          <ClinicianDash />
+        </MacBookFrame>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<Root />);
+</script>
+
+</body>
+</html>
