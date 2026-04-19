@@ -7,76 +7,82 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,50;1,9..144,400..900,50&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    /* DARK mode — film palette */
-    --film-black: #0A0A0A;
-    --film-ink:   #EDEAE3;
-    --film-mute:  #7A746B;
-    --film-soft:  #2A2620;
-    --accent:     #2E7D4F;   /* one word per DARK slide */
+    /* Light clinical palette */
+    --bg:           #FFFFFF;
+    --bg-soft:      #F8F7F5;
+    --ink:          #0D0D0D;
+    --ink-mid:      #3D3D3D;
+    --ink-mute:     #6B6B6B;
+    --ink-light:    #9A9A9A;
+    --rule:         #E8E6E3;
+    --accent:       #1F4D2E;
+    --accent-soft:  #2A6B40;
+    --warm:         #F8F7F5;
 
-    /* WARM mode — paper palette (lifted from prototype, unmodified) */
-    --paper:      #F8F8F5;
-    --ink:        #0D0D0D;
-    --mute:       #6B6B6B;
-    --mute-soft:  #9A9A9A;
-    --green:      #1F4D2E;
-    --green-soft: #2A6B40;
-    --amber:      #C88B1A;
-    --red:        #B9432C;
+    /* Warm slides — same as base, already light */
+    --paper:        #F8F7F5;
+    --green:        #1F4D2E;
+    --red:          #B9432C;
   }
 
   html, body {
     margin: 0; padding: 0; height: 100%; width: 100%;
-    background: #000;
-    color: var(--film-ink);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
   }
+
+  body {
+    background: #0D0D0D;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  #deck-stage {
+    width: 1920px;
+    height: 1080px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    transform-origin: top left;
+  }
+
   * { box-sizing: border-box; }
 
-  /* Prototype prototypes-inside-slides use Inter; keep original animations
-     available in case embedded components reference them. */
+  /* Prototype component animations — required by embedded patient-app / clinician-dash */
   @keyframes pulse    { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:.5; transform:scale(.85) } }
   @keyframes pulseBar { 0%,100% { box-shadow:0 0 0 0 rgba(185,67,44,0) } 50% { box-shadow:0 0 0 4px rgba(185,67,44,.12) } }
   @keyframes slideUp  { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
   @keyframes scaleIn  { from { opacity:0; transform:scale(.7) } to { opacity:1; transform:scale(1) } }
   @keyframes dash     { to { stroke-dashoffset:0 } }
-  @keyframes fadeIn   { from { opacity:0 } to { opacity:1 } }
   @keyframes blink    { 0%,50% { opacity:1 } 51%,100% { opacity:0 } }
   @keyframes slideDown{ from { opacity:0; transform:translateX(-50%) translateY(-12px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }
   @keyframes spin     { to { transform:rotate(360deg) } }
   @keyframes growBar  { from { transform:scaleX(0) } to { transform:scaleX(1) } }
 
   /* Pitch-deck motion primitives */
-  @keyframes pitchArrive {
-    from { opacity: 0; transform: scale(1.04); filter: blur(4px); }
-    to   { opacity: 1; transform: scale(1);    filter: blur(0); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes pitchArriveEmphatic {
-    from { opacity: 0; transform: scale(1.05); filter: blur(6px); }
-    to   { opacity: 1; transform: scale(1);    filter: blur(0); }
-  }
-  @keyframes pitchArriveFrame {
-    from { opacity: 0; transform: scale(0.96); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-  @keyframes pitchDraw {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
-  @keyframes pitchDrawV {
-    from { transform: scaleY(0); }
-    to   { transform: scaleY(1); }
-  }
-  @keyframes pitchFade {
+
+  @keyframes fadeIn {
     from { opacity: 0; }
     to   { opacity: 1; }
+  }
+
+  @keyframes drawRule {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
   }
 
   /* Timeline-engine highlight effects */
@@ -84,14 +90,9 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(31, 77, 46, 0); }
     50%      { box-shadow: 0 0 0 8px rgba(31, 77, 46, 0.16); }
   }
-  .tl-pulse  { animation: tlPulseRing 1.4s ease-in-out 2; }
+  .tl-pulse   { animation: tlPulseRing 1.4s ease-in-out 2; }
   .tl-outline { outline: 2px solid rgba(31, 77, 46, 0.65); outline-offset: 4px; transition: outline 300ms ease; }
   .tl-hover   { background-color: rgba(31, 77, 46, 0.06) !important; transition: background-color 200ms ease; }
-
-  /* DARK slides use Fraunces peak moments. The ink variable changes per
-     slide tone; SlideFrame controls background. */
-  .deck-slide.tone-dark { color: var(--film-ink); }
-  .deck-slide.tone-warm { color: var(--ink); }
 
   /* Hide any stray scrollbars from the embedded prototype frames. */
   .deck-slide ::-webkit-scrollbar { width: 0; height: 0; }
@@ -119,20 +120,14 @@
 <script type="text/babel" src="components/pitch-chrome.jsx"></script>
 <script type="text/babel" src="components/pitch-annotation.jsx"></script>
 
-<!-- Slides (0..12) -->
-<script type="text/babel" src="components/slides/slide-00-hook.jsx"></script>
-<script type="text/babel" src="components/slides/slide-01-scale.jsx"></script>
-<script type="text/babel" src="components/slides/slide-02-money.jsx"></script>
-<script type="text/babel" src="components/slides/slide-03-rosebud.jsx"></script>
-<script type="text/babel" src="components/slides/slide-04-instrument.jsx"></script>
-<script type="text/babel" src="components/slides/slide-05-session.jsx"></script>
-<script type="text/babel" src="components/slides/slide-06-patient.jsx"></script>
-<script type="text/babel" src="components/slides/slide-07-proof.jsx"></script>
-<script type="text/babel" src="components/slides/slide-08-moat.jsx"></script>
-<script type="text/babel" src="components/slides/slide-09-ecosystem.jsx"></script>
-<script type="text/babel" src="components/slides/slide-10-insurer.jsx"></script>
-<script type="text/babel" src="components/slides/slide-11-ceiling.jsx"></script>
-<script type="text/babel" src="components/slides/slide-12-ask.jsx"></script>
+<!-- Slides (0..6) -->
+<script type="text/babel" src="components/slides/slide-00-what.jsx"></script>
+<script type="text/babel" src="components/slides/slide-01-patient.jsx"></script>
+<script type="text/babel" src="components/slides/slide-02-physio.jsx"></script>
+<script type="text/babel" src="components/slides/slide-03-problem.jsx"></script>
+<script type="text/babel" src="components/slides/slide-04-matters.jsx"></script>
+<script type="text/babel" src="components/slides/slide-05-trust.jsx"></script>
+<script type="text/babel" src="components/slides/slide-06-ask.jsx"></script>
 
 <!-- Deck shell + mount -->
 <script type="text/babel" src="components/pitch-deck.jsx"></script>

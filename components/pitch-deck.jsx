@@ -1,22 +1,22 @@
-// Pitch deck shell — orchestrates 13 slides at 1920×1080, handles keyboard
-// navigation, dissolve transitions, export auto-advance, chrome (ticking
-// SESSION timestamp + pagination), viewport letterboxing, and the shared
-// React refs that slides use to drive embedded prototype components.
+// Pitch deck shell — orchestrates 7 slides at 1920×1080, handles keyboard
+// navigation, opacity crossfade transitions, export auto-advance, pagination
+// chrome, viewport letterboxing, and the shared React refs that slides use
+// to drive embedded prototype components.
 //
 // Individual slides live in components/slides/*.jsx and attach themselves
-// to window.PitchSlides under their numeric id (0..12).
+// to window.PitchSlides under their numeric id (0..6).
 
 (function () {
-  const {
-    SessionClockProvider, SessionTimestamp, Pagination,
-  } = window;
+  const { SlidePagination } = window;
 
-  const SLIDE_COUNT = 13;
+  const SLIDE_COUNT = 7;
 
   // Dwell durations (ms) for export / auto-advance mode.
-  // Indices 0..12 — hook, scale, money, rosebud, instrument, session,
-  // patient, proof, moat, ecosystem, insurer, ceiling, ask.
-  const DWELL = [5000, 11000, 10000, 13000, 10000, 12000, 14000, 10000, 11000, 11000, 9000, 13000, 14000];
+  // 0 what · 1 patient · 2 physio · 3 problem · 4 matters · 5 trust · 6 ask
+  const DWELL = [6000, 14000, 14000, 12000, 10000, 10000, 12000];
+
+  // All slides are light tone.
+  const SLIDE_TONE = ['light', 'light', 'light', 'light', 'light', 'light', 'light'];
 
   function ScaleStage({ children }) {
     const [transform, setTransform] = React.useState('scale(1)');
@@ -35,13 +35,17 @@
       <div style={{
         position: 'fixed', inset: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#000', overflow: 'hidden',
+        background: '#0D0D0D', overflow: 'hidden',
       }}>
-        <div style={{
-          width: 1920, height: 1080, position: 'relative',
-          transform, transformOrigin: 'center center',
-          flexShrink: 0,
-        }}>
+        <div
+          id="deck-stage"
+          style={{
+            width: 1920, height: 1080, position: 'relative',
+            transform, transformOrigin: 'center center',
+            background: '#FFFFFF',
+            flexShrink: 0,
+          }}
+        >
           {children}
         </div>
       </div>
@@ -106,7 +110,6 @@
       bumpEpoch(slideIndex);
     }, [slideIndex, bumpEpoch]);
 
-    // Start the clock + initial slide on mount.
     React.useEffect(() => {
       bumpEpoch(0);
     }, [bumpEpoch]);
@@ -153,7 +156,7 @@
     React.useEffect(() => {
       if (!exportMode) return undefined;
       if (slideIndex >= SLIDE_COUNT - 1) return undefined;
-      const dwell = DWELL[slideIndex] || 5000;
+      const dwell = DWELL[slideIndex] || 6000;
       autoAdvanceRef.current = setTimeout(() => go(slideIndex + 1), dwell);
       return () => { if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current); };
     }, [slideIndex, exportMode, go]);
@@ -162,20 +165,20 @@
     for (let i = 0; i < SLIDE_COUNT; i += 1) {
       const Component = window.PitchSlides && window.PitchSlides[i];
       const isActive = slideIndex === i;
-      const tone = SLIDE_TONE[i] || 'dark';
       slides.push(
         <div
           key={i}
-          className={`deck-slide deck-slide-${i} tone-${tone}`}
+          className={`deck-slide deck-slide-${i}`}
           data-slide={i}
           data-active={isActive}
           style={{
-            position: 'absolute', inset: 0,
-            width: 1920, height: 1080,
-            background: tone === 'dark' ? 'var(--film-black)' : 'var(--paper)',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: 'var(--bg)',
             opacity: isActive ? 1 : 0,
             pointerEvents: isActive ? 'auto' : 'none',
-            transition: 'opacity 800ms ease',
+            transition: 'opacity 500ms ease',
             overflow: 'hidden',
           }}
         >
@@ -186,39 +189,29 @@
           >
             {Component
               ? <Component isActive={isActive} epoch={epochs[i] || 0} slideIndex={i} />
-              : <PlaceholderSlide index={i} tone={tone} />}
+              : <PlaceholderSlide index={i} />}
           </div>
-          {/* Chrome — SessionTimestamp + Pagination. Clock starts on the
-              title slide (index 0). */}
-          <SessionTimestamp tone={tone} />
-          <Pagination index={i} total={SLIDE_COUNT} tone={tone} />
+          <SlidePagination index={i} total={SLIDE_COUNT} />
         </div>
       );
     }
 
     return (
-      <SessionClockProvider slideIndex={slideIndex}>
+      <>
         <ScaleStage>
           {slides}
         </ScaleStage>
         <ControlsHint visible={controlsVisible} slideIndex={slideIndex} total={SLIDE_COUNT} />
-      </SessionClockProvider>
+      </>
     );
   }
 
-  // Tone map — 13 slides, 0-indexed.
-  // 0 hook · 1 scale · 2 money · 3 rosebud · 4 instrument ·
-  // 5 session (warm) · 6 patient (warm) · 7 proof · 8 moat ·
-  // 9 ecosystem · 10 insurer · 11 ceiling · 12 ask.
-  const SLIDE_TONE = ['dark', 'dark', 'dark', 'dark', 'dark', 'warm', 'warm', 'dark', 'dark', 'dark', 'dark', 'dark', 'dark'];
-
-  function PlaceholderSlide({ index, tone }) {
-    const color = tone === 'dark' ? 'var(--film-mute, #7A746B)' : 'var(--mute, #6B6B6B)';
+  function PlaceholderSlide({ index }) {
     return (
       <div style={{
         position: 'absolute', inset: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color,
+        color: 'var(--ink-mute, #6B6B6B)',
         fontFamily: "'JetBrains Mono', monospace",
         fontSize: 18, letterSpacing: '0.25em', textTransform: 'uppercase',
       }}>
