@@ -1,23 +1,22 @@
-// Pitch deck shell — orchestrates 11 slides at 1920×1080, handles keyboard
+// Pitch deck shell — orchestrates 13 slides at 1920×1080, handles keyboard
 // navigation, dissolve transitions, export auto-advance, chrome (ticking
 // SESSION timestamp + pagination), viewport letterboxing, and the shared
 // React refs that slides use to drive embedded prototype components.
 //
 // Individual slides live in components/slides/*.jsx and attach themselves
-// to window.PitchSlides under their numeric id (0..10).
+// to window.PitchSlides under their numeric id (0..12).
 
 (function () {
   const {
     SessionClockProvider, SessionTimestamp, Pagination,
   } = window;
 
-  const SLIDE_COUNT = 11;
+  const SLIDE_COUNT = 13;
 
   // Dwell durations (ms) for export / auto-advance mode.
-  // Indices 0..10 — title, problem, what, before-session, patient,
-  // why-matters, why-not-others, clinician, outcome, opportunity, ask.
-  // Total 126s = 2:06.
-  const DWELL = [4000, 10000, 10000, 12000, 14000, 10000, 10000, 22000, 10000, 12000, 12000];
+  // Indices 0..12 — hook, scale, money, rosebud, instrument, session,
+  // patient, proof, moat, ecosystem, insurer, ceiling, ask.
+  const DWELL = [5000, 11000, 10000, 13000, 10000, 12000, 14000, 10000, 11000, 11000, 9000, 13000, 14000];
 
   function ScaleStage({ children }) {
     const [transform, setTransform] = React.useState('scale(1)');
@@ -207,11 +206,11 @@
     );
   }
 
-  // Tone map — 11 slides, 0-indexed.
-  // 0 title · 1 problem · 2 what · 3 before-session (warm) ·
-  // 4 patient (warm) · 5 why-matters · 6 why-not-others ·
-  // 7 clinician (warm) · 8 outcome (warm) · 9 opportunity · 10 ask.
-  const SLIDE_TONE = ['dark', 'dark', 'dark', 'warm', 'warm', 'dark', 'dark', 'warm', 'warm', 'dark', 'dark'];
+  // Tone map — 13 slides, 0-indexed.
+  // 0 hook · 1 scale · 2 money · 3 rosebud · 4 instrument ·
+  // 5 session (warm) · 6 patient (warm) · 7 proof · 8 moat ·
+  // 9 ecosystem · 10 insurer · 11 ceiling · 12 ask.
+  const SLIDE_TONE = ['dark', 'dark', 'dark', 'dark', 'dark', 'warm', 'warm', 'dark', 'dark', 'dark', 'dark', 'dark', 'dark'];
 
   function PlaceholderSlide({ index, tone }) {
     const color = tone === 'dark' ? 'var(--film-mute, #7A746B)' : 'var(--mute, #6B6B6B)';
