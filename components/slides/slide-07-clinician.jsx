@@ -1,4 +1,4 @@
-// Slide 07 — THE CLINICIAN SIDE · WARM (24s) · DECK-FULL · AUTO-PLAY
+// Slide 07 — THE CLINICIAN SIDE · WARM (22s) · DECK-FULL · AUTO-PLAY
 // Embedded MacBook with ClinicianDash. The timeline walks the eye through
 // the 4 KPIs, then the 3 red-flag patients, then the Conor schedule card.
 // Each beat gets a Fraunces italic annotation anchored back to its target.
