@@ -1,6 +1,6 @@
-// Slide 05 — THE BILLION-DOLLAR GAP · DARK (12s) · DECK-LEFT
+// Slide 06 — WHY NOT THE OTHERS · DARK (10s) · DECK-LEFT
 // Three-row competitor table with sub-lines explaining each company's
-// position, hairline rule, italic verdict with an accented "for".
+// structural gap, hairline rule, italic verdict with an accented "for".
 
 (function () {
   const COMPETITORS = [
@@ -21,7 +21,7 @@
     },
   ];
 
-  function Slide05() {
+  function Slide06() {
     const left = Math.round(1920 * 0.10);   // 192
     const tableWidth = 1040;
     const eyebrowY = Math.round(1080 * 0.22);              // 238
@@ -59,7 +59,7 @@
           animation: 'pitchArrive 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both',
           animationDelay: '200ms',
         }}>
-          § THE MARKET
+          § WHY NOT THE OTHERS
         </div>
 
         {/* Table header row */}
@@ -183,5 +183,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[5] = Slide05;
+  window.PitchSlides[6] = Slide06;
 })();

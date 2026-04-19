@@ -14,9 +14,10 @@
   const SLIDE_COUNT = 11;
 
   // Dwell durations (ms) for export / auto-advance mode.
-  // Indices 0..10 — title, problem, gap, what, insight, market,
-  // patient, clinician, outcome, ceiling, ask. Total 138s = 2:18.
-  const DWELL = [5000, 12000, 8000, 10000, 15000, 12000, 16000, 24000, 10000, 14000, 12000];
+  // Indices 0..10 — title, problem, what, before-session, patient,
+  // why-matters, why-not-others, clinician, outcome, opportunity, ask.
+  // Total 126s = 2:06.
+  const DWELL = [4000, 10000, 10000, 12000, 14000, 10000, 10000, 22000, 10000, 12000, 12000];
 
   function ScaleStage({ children }) {
     const [transform, setTransform] = React.useState('scale(1)');
@@ -207,10 +208,10 @@
   }
 
   // Tone map — 11 slides, 0-indexed.
-  // 0 title · 1 problem · 2 gap · 3 what (warm) · 4 insight · 5 market ·
-  // 6 patient (warm) · 7 clinician (warm) · 8 outcome (warm) · 9 ceiling ·
-  // 10 ask.
-  const SLIDE_TONE = ['dark', 'dark', 'dark', 'warm', 'dark', 'dark', 'warm', 'warm', 'warm', 'dark', 'dark'];
+  // 0 title · 1 problem · 2 what · 3 before-session (warm) ·
+  // 4 patient (warm) · 5 why-matters · 6 why-not-others ·
+  // 7 clinician (warm) · 8 outcome (warm) · 9 opportunity · 10 ask.
+  const SLIDE_TONE = ['dark', 'dark', 'dark', 'warm', 'warm', 'dark', 'dark', 'warm', 'warm', 'dark', 'dark'];
 
   function PlaceholderSlide({ index, tone }) {
     const color = tone === 'dark' ? 'var(--film-mute, #7A746B)' : 'var(--mute, #6B6B6B)';

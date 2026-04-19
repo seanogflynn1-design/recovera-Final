@@ -1,4 +1,4 @@
-// Slide 06 — THE PATIENT SIDE · WARM (16s) · DECK-FULL · AUTO-PLAY
+// Slide 04 — THE PATIENT SIDE · WARM (14s) · DECK-FULL · AUTO-PLAY
 //
 // Embedded iPhone with PatientApp playing a scripted sequence: start session
 // → complete → log check-in → streak ticks 12 → 13. Rotating Fraunces italic
@@ -39,7 +39,7 @@
     { at: 14500, action: 'hideAnnotation',  id: 'callout-streak' },
   ];
 
-  function Slide06({ isActive }) {
+  function Slide04({ isActive }) {
     const patientAppRef = React.useRef(null);
     const [annotations, setAnnotations] = React.useState({});
 
@@ -164,5 +164,5 @@
   }
 
   if (!window.PitchSlides) window.PitchSlides = {};
-  window.PitchSlides[6] = Slide06;
+  window.PitchSlides[4] = Slide04;
 })();
