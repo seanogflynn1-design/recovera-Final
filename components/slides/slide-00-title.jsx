@@ -1,4 +1,4 @@
-// Slide 00 — TITLE · DARK (5s) · DECK-FULL
+// Slide 00 — TITLE · DARK (4s) · DECK-FULL
 // "recovera" wordmark, hairline rule, NovaUCD metadata, explanation line.
 // Start of the SessionTimestamp clock.
 
@@ -57,7 +57,7 @@
           animation: 'pitchFade 400ms ease both',
           animationDelay: '2200ms',
         }}>
-          A monitoring platform for physiotherapy.
+          Software for physiotherapy clinics.
         </div>
       </div>
     );

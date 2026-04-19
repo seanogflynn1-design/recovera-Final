@@ -1,6 +1,7 @@
-// Slide 01 — THE PROBLEM · DARK (12s) · DECK-LEFT
+// Slide 01 — THE PROBLEM · DARK (10s) · DECK-LEFT
 // Explanation line at top, giant "18" left-anchored, supporting text
-// baseline-right of the numeral, thesis sub-headline below, source citation.
+// baseline-right of the numeral (accent on "asking"), thesis sub-headline,
+// source citation.
 
 (function () {
   function Slide01() {
@@ -77,9 +78,9 @@
           animation: 'pitchArrive 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both',
           animationDelay: '1700ms',
         }}>
-          <div>minutes a <span style={{ color: 'var(--accent)' }}>physiotherapist</span> spends</div>
-          <div>rebuilding what happened at home,</div>
-          <div>before every appointment.</div>
+          <div>minutes a physio spends <span style={{ color: 'var(--accent)' }}>asking</span></div>
+          <div>what happened at home,</div>
+          <div>before every session.</div>
         </div>
 
         {/* Sub-thesis, aligned with numeral left edge */}
